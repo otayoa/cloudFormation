@@ -6,7 +6,10 @@ Resources:
       ImageId: ami-08f3d892de259504d #Linux ami id in us-east region
       Tags:
       - Key: "Name"
-        Value: !Join [ " ", [ Jump, Box for, !Ref AWS::Region] ]
+        Value: !Join 
+        - "" 
+        - - "Jump Box for "
+          - !Ref AWS::Region
       SecurityGroups: 
       - !Ref MySecurityGroup
   MySecurityGroup:
