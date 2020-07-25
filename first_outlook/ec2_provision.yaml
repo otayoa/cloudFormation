@@ -1,3 +1,18 @@
+Parameters:
+  ServiceName:
+    Description: "Name of service the stack would be used for: "
+    Type: String 
+  InstanceType:
+    Description: "EC2 type to be launched: Permitted types: t2.micro, m1.small, m1.large"
+    Type: String 
+    Default: t2.micro 
+    AllowedValues:
+    - t2.micro
+    - m1.small 
+    - m1.large 
+  KeyName:
+    Description: "KeyPair file name for remote login"
+    Type: AWS::EC2::KeyPair::KeyName
 Mappings: 
   RegionAMI:
     us-east-1:
@@ -10,7 +25,7 @@ Resources:
   Ec2Instance:
     Type: "AWS::EC2::Instance"
     Properties:
-      InstanceType: t2.micro
+      InstanceType: !Ref InstanceType
       ImageId: 
         Fn::FindInMap: 
         - RegionAMI
@@ -18,11 +33,8 @@ Resources:
         - AMI
       Tags:
       - Key: "Name"
-        Value: 
-          Fn::Join:
-          - "" 
-          - - "Jump Box for "
-            - !Ref AWS::Region
+        Value: !Ref ServiceName 
+      KeyName: !Ref KeyName
       SecurityGroups: 
       - !Ref JumpBoxSG
   JumpBoxSG:
