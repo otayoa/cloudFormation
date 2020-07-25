@@ -1,18 +1,31 @@
+Mappings: 
+  RegionAMI:
+    us-east-1:
+      AMI: ami-08f3d892de259504d
+    eu-west-1:
+      AMI: ami-0c3e74fa87d2a4227
+    ap-south-1:
+      AMI: ami-0732b62d310b80e97
 Resources:
   Ec2Instance:
     Type: "AWS::EC2::Instance"
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-08f3d892de259504d #Linux ami id in us-east region
+      ImageId: 
+        Fn::FindInMap: 
+        - RegionAMI
+        - !Ref AWS::Region 
+        - AMI
       Tags:
       - Key: "Name"
-        Value: !Join 
-        - "" 
-        - - "Jump Box for "
-          - !Ref AWS::Region
+        Value: 
+          Fn::Join:
+          - "" 
+          - - "Jump Box for "
+            - !Ref AWS::Region
       SecurityGroups: 
-      - !Ref MySecurityGroup
-  MySecurityGroup:
+      - !Ref JumpBoxSG
+  JumpBoxSG:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Open port 22 for ssh connections 
